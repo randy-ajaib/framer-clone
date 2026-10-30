@@ -5,7 +5,7 @@ import type { Asset, Document, Node, NodeId } from './types';
 export interface ExportOptions {
   /** 'files' writes images/ and fonts/ paths for the zip; 'inline' embeds images and points fonts at fontBase. */
   mode: 'files' | 'inline';
-  /** Where the Lato .ttf files live when mode is 'inline' (e.g. the dev server origin + /fonts/). */
+  /** Where the Lato .ttf files live when mode is 'inline' (an absolute URL ending in /fonts/). */
   fontBase?: string;
 }
 
@@ -157,8 +157,8 @@ function dataUrlToBytes(dataUrl: string): Uint8Array {
   return new TextEncoder().encode(decodeURIComponent(data));
 }
 
-/** Builds site.zip in the browser. */
-export async function buildZip(doc: Document): Promise<Blob> {
+/** Builds site.zip in the browser. `fontBase` is the URL folder holding the Lato .ttf files. */
+export async function buildZip(doc: Document, fontBase: string): Promise<Blob> {
   const { default: JSZip } = await import('jszip');
   const { html, css, images, fontFiles } = exportSite(doc, { mode: 'files' });
   const zip = new JSZip();
@@ -166,7 +166,7 @@ export async function buildZip(doc: Document): Promise<Blob> {
   zip.file('styles.css', css);
   for (const [path, asset] of Object.entries(images)) zip.file(path, dataUrlToBytes(asset.dataUrl));
   for (const file of fontFiles) {
-    const res = await fetch(`/fonts/${file}`);
+    const res = await fetch(`${fontBase}${file}`);
     if (res.ok) zip.file(`fonts/${file}`, await res.arrayBuffer());
   }
   return zip.generateAsync({ type: 'blob' });

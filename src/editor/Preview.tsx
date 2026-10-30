@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { exportInlinePage } from '../model/export';
 import { BREAKPOINTS, useEditor } from '../store';
+import { fontsUrl } from './Toolbar';
 
 /** Shows the exported page itself, not the canvas, so the preview is exactly what ships. */
 export function Preview() {
   const doc = useEditor((s) => s.doc);
   const [bp, setBp] = useState(useEditor.getState().breakpoint);
-  const html = useMemo(() => exportInlinePage(doc, `${location.origin}/fonts/`), [doc]);
+  const html = useMemo(() => exportInlinePage(doc, fontsUrl()), [doc]);
   const close = () => useEditor.getState().setPreviewOpen(false);
 
   useEffect(() => {

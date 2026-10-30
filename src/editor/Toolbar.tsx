@@ -5,6 +5,9 @@ import type { NodeType } from '../model/types';
 import { isDocument } from '../persist';
 import { BREAKPOINTS, useEditor } from '../store';
 
+/** The app's bundled Lato files, wherever the app is hosted. */
+export const fontsUrl = () => new URL(`${import.meta.env.BASE_URL}fonts/`, location.href).href;
+
 export function download(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -76,7 +79,7 @@ export function Toolbar() {
     setBusy(true);
     try {
       const doc = useEditor.getState().doc;
-      download(await buildZip(doc), `${slugify(doc.title || 'site')}.zip`);
+      download(await buildZip(doc, fontsUrl()), `${slugify(doc.title || 'site')}.zip`);
       flash('Exported. Unzip it and open index.html.');
     } catch (err) {
       flash(`Export failed: ${(err as Error).message}`);
