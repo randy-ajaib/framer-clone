@@ -4,6 +4,9 @@ A Framer-style visual editor MVP: lay out a landing page on a canvas with stacks
 style it, preview it at desktop, tablet and phone widths, and export a zip of
 plain HTML, CSS, images and fonts. See the PRD for scope.
 
+Live: https://randy-ajaib.github.io/framer-clone/ (deployed to GitHub Pages on
+every push to `main`).
+
 ## Run
 
 Requires [Bun](https://bun.sh) (Node is not needed).
